@@ -17,6 +17,16 @@ server.post("/projects", (req, res) => {
   return res.json(projects);
 });
 
+server.post("/projects/:id/tasks", (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+
+  const index = projects.findIndex(project => project.id == id);
+  projects[index].tasks.push(title);
+
+  res.json(projects);
+});
+
 server.put("/projects/:id", (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
