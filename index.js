@@ -5,6 +5,15 @@ const server = express();
 server.use(express.json());
 
 const projects = [];
+const checkIfExists = (req, res, next) => {
+  const { id } = req.params;
+
+  const index = projects.findIndex(project => project.id == id);
+
+  return index >= 0
+    ? next()
+    : res.status(400).json({ error: "Project does not exists" });
+};
 
 server.get("/projects", (req, res) => {
   return res.json(projects);
@@ -17,7 +26,7 @@ server.post("/projects", (req, res) => {
   return res.json(projects);
 });
 
-server.post("/projects/:id/tasks", (req, res) => {
+server.post("/projects/:id/tasks", checkIfExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
@@ -27,7 +36,7 @@ server.post("/projects/:id/tasks", (req, res) => {
   res.json(projects);
 });
 
-server.put("/projects/:id", (req, res) => {
+server.put("/projects/:id", checkIfExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
@@ -37,7 +46,7 @@ server.put("/projects/:id", (req, res) => {
   return res.json(projects);
 });
 
-server.delete("/projects/:id", (req, res) => {
+server.delete("/projects/:id", checkIfExists, (req, res) => {
   const { id } = req.params;
 
   const index = projects.findIndex(project => project.id == id);
