@@ -5,6 +5,8 @@ const server = express();
 server.use(express.json());
 
 const projects = [];
+let count = 0;
+
 const checkIfExists = (req, res, next) => {
   const { id } = req.params;
 
@@ -14,6 +16,12 @@ const checkIfExists = (req, res, next) => {
     ? next()
     : res.status(400).json({ error: "Project does not exists" });
 };
+
+server.use((req, res, next) => {
+  count++;
+  console.log(count);
+  next();
+});
 
 server.get("/projects", (req, res) => {
   return res.json(projects);
